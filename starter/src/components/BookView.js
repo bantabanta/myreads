@@ -1,15 +1,15 @@
 import PropTypes from 'prop-types';
 
-const BookView = ({ currentBook, shelf, onUpdateShelf }) => {
+const BookView = ({ currentBook, onUpdateShelf }) => {
 
   // TODO: set an 'image not found' image if no thumbnail
-  const Thumbnail = (book) => {
-    if (book.imageLinks) {
-      return (book.imageLinks.smallThumbnail)
-    } else { return ('') }
-  };
+  const bookCover = (book) =>
+    book.imageLinks
+      ? book.imageLinks.smallThumbnail
+      : '';
 
-  const updateShelf = (e) => onUpdateShelf(currentBook, e.target.value)
+  // callback:
+  const handleChange = (e) => onUpdateShelf(currentBook, e.target.value)
 
   return (
     <li>
@@ -21,12 +21,12 @@ const BookView = ({ currentBook, shelf, onUpdateShelf }) => {
               width: 128,
               height: 188,
               backgroundImage:
-                `url(${Thumbnail(currentBook)})`,
+                `url(${bookCover(currentBook)})`,
             }}
           ></div>
           <div className="book-shelf-changer">
             <select defaultValue={currentBook.shelf}
-            onChange={updateShelf}>
+            onChange={handleChange}>
               <option value="none" disabled>Move to...</option>
               <option value="currentlyReading">Currently Reading</option>
               <option value="wantToRead">Want to Read</option>
@@ -47,7 +47,7 @@ const BookView = ({ currentBook, shelf, onUpdateShelf }) => {
 
 BookView.propTypes = {
   currentBook: PropTypes.object.isRequired,
-  shelf: PropTypes.string.isRequired
+  onUpdateShelf: PropTypes.func.isRequired
 };
 
 export default BookView;
