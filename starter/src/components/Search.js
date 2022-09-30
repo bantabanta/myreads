@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
 import * as BooksAPI from "../BooksAPI";
-import PropTypes from 'prop-types';
 import BookView from './BookView';
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import PropTypes from 'prop-types';
 
-const Search = ({ books }) => {
+const Search = ({ books, onUpdateShelf }) => {
   const [query, setQuery] = useState('');
   const [queryBooks, setQueryBooks] = useState([]);
 
@@ -13,32 +13,40 @@ const Search = ({ books }) => {
     fetchQueryBooks(query);
   };
 
-  const clearQuery = () => {
-    updateQuery('');
-  };
-
-  // fetching query books:
-  // check that there is is a query, if there is
-  // fetch from the API, if API errors
-  // set the queryBooks to array,
-  // else, set it to the result of the call
-  // These books don't have a shelf key
   const fetchQueryBooks = (query) => {
     if (query.length > 0) {
       const setShow = async () => {
-        const res = await BooksAPI.search(query, 10);
+        const res = await BooksAPI.search(query);
         if (res.error) {
           setQueryBooks([]);
+          console.log('error');
         } else {
           setQueryBooks(res);
         }
       }
       setShow();
-    }
-    else {
+    } else {
       setQueryBooks([]);
     }
   };
+
+  // If querryBook is already in books, inherit shelf
+  // key/value. If not then set queryBooks shelf to none.
+  // This feels really 'verbose' for what it's doing...
+  // not sure how to clean up.
+  const updatedQuery = queryBooks.map(queryBook => {
+    books.map(book => {
+      if (book.id === queryBook.id) {
+        queryBook.shelf = book.shelf;
+      }
+      return book;
+    }
+    );
+    if (!queryBook.hasOwnProperty('shelf')) {
+      queryBook.shelf = 'none'
+    };
+    return queryBook;
+  });
 
   return (
 
@@ -57,7 +65,6 @@ const Search = ({ books }) => {
           />
         </div>
       </div>
-
       {
         query !== '' && (
           <div className="search-books-results">
@@ -65,13 +72,16 @@ const Search = ({ books }) => {
               <span>
                 Showing {queryBooks.length} results for '{query}'
               </span>
-              <button onClick={() => clearQuery()}>Clear Search</button>
+              <button onClick={() => updateQuery('')}>Clear Search</button>
             </div>
             <ol className="books-grid">
-            {queryBooks.map((book) =>
-            {book.shelf = 'none'}
-            <BookView key={book.id} currentBook={book}/>
-            )}
+              {updatedQuery.map((queryBook) =>
+                  <BookView
+                  key={queryBook.id}
+                    currentBook={queryBook}
+                    shelf={queryBook.shelf}
+                    onUpdateShelf={onUpdateShelf}/>
+              )}
             </ol>
           </div>
         )}
