@@ -1,6 +1,8 @@
 import BookView from './BookView';
 
 const SearchResults = ({books, queryBooks, onUpdateShelf }) => {
+
+  // Create a new array of books to show with corresponding shelf:
   const updatedQuery = queryBooks.map(queryBook => {
     books.map(book => {
       if (book.id === queryBook.id) {

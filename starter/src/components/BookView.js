@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
+import noThumbnail from '../icons/no-image.jpg';
 
 const BookView = ({ currentBook, onUpdateShelf }) => {
 
-  // TODO: set an 'image not found' image if no thumbnail
+  // Set thumbnail or fallback if there is no thumbnail:
   const bookCover = (book) =>
     book.imageLinks
       ? book.imageLinks.smallThumbnail
-      : '';
+      : noThumbnail;
 
   // callback:
   const handleChange = (e) => onUpdateShelf(currentBook, e.target.value)

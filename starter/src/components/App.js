@@ -1,5 +1,5 @@
-import "../App.css";
 import * as BooksAPI from "../BooksAPI";
+import "../App.css";
 import ListBooks from "./ListBooks";
 import SearchBooks from "./SearchBooks";
 import { Route, Routes } from 'react-router-dom';
@@ -8,8 +8,9 @@ import { useState, useEffect } from 'react';
 function App() {
   const [books, setBooks] = useState([]);
 
-  // load 'books' from API on first DOM render.
-  // books dependency to rerender on 'books' state change.
+  // test for node modules
+  // Load 'books' array from API on first DOM render (GET).
+  // Books dependency forces rerender on 'books' state chagne.
   useEffect(() => {
     const getBooks = async () => {
       setBooks(await BooksAPI.getAll());
@@ -17,7 +18,7 @@ function App() {
     getBooks();
   }, [books]);
 
-  // API handles shelf update with a POST
+  // API handles shelf update (PUT)
   const updateShelf = (book, shelf) => {
     const setShelf = async () => {
       await BooksAPI.update(book, shelf);

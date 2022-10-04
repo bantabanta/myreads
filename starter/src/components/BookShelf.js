@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 const Bookshelf = ({ books, shelf, onUpdateShelf }) => {
 
-  // get array of books in the corresponding shelf
+  // Filter for books on given shelf
   const shelfBooks = books.filter((book) => book.shelf === shelf.key)
 
   return (
